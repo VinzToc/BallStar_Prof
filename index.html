@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ball Star Prof</title>
+<meta name="description" content="Interface professeur de Ball Star : réglages du jeu, import des fichiers élèves et suivi de la progression.">
+<meta name="theme-color" content="#12062b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap">
+<link rel="stylesheet" href="ballstar.css">
+<link rel="stylesheet" href="prof.css">
+</head><body>
+<div class="wrap">
+<header class="top"><span class="lg" id="logo"></span><div><h1>BALL <span>STAR</span> <em class="tagp">PROF</em></h1><p>Réglages · import · progression</p></div><span class="sp"></span>
+ <a class="ib" href="https://vinztoc.github.io/Mes_Apps_EPS/" title="Retour à Mes Apps EPS" aria-label="Retour à Mes Apps EPS">↩</a></header>
+<div id="who" class="who"></div>
+<nav class="ptabs" aria-label="Sections">
+ <button data-go="vClasse" class="on">📊 Classe</button><button data-go="vImport">📥 Import</button><button data-go="vReglages">⚙️ Réglages</button>
+</nav>
+
+<main>
+<!-- CLASSE -->
+<section id="vClasse">
+ <div class="card">
+  <div class="filters">
+   <label class="f">Classe<select id="fClasse"></select></label>
+   <label class="f">Trier par<select id="fTri"><option value="xp">XP (du plus haut)</option><option value="nom">Nom</option><option value="matchs">Nombre de matchs</option><option value="conf">Matchs confirmés</option></select></label>
+   <label class="chk"><input type="checkbox" id="fTous"> Afficher aussi les élèves sans match</label>
+  </div>
+  <div class="stats" id="cStats"></div>
+  <div class="lvlsplit" id="cNiv"></div>
+ </div>
+ <div class="card"><h2>Élèves</h2>
+  <p class="mut" style="margin-top:-4px">XP recalculée avec vos réglages. Touchez un élève pour voir sa progression.</p>
+  <div class="tbl"><table class="ptable" id="cTable"></table></div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="cExport">⬇️ Bilan de la classe (.xlsx)</button><button class="btn g" id="cExportData">⬇️ Données Ball Star (format Mes Apps EPS)</button></div>
+ </div>
+ <div class="card legend"><h2>Comment lire ce tableau</h2>
+  <p><b>✔ Confirmé</b> : l'adversaire a enregistré le même match (même jour, score inversé). <b>≠ Contesté</b> : l'adversaire a enregistré un score différent. Les autres matchs n'ont pas pu être vérifiés (adversaire sans fichier ou nom différent).</p>
+  <p><b>⚠ XP</b> : l'XP calculée dans l'appli de l'élève ne correspond pas à vos réglages. L'élève n'a pas importé votre fichier de réglages, ou ses données ont été modifiées. Le classement utilise toujours l'XP recalculée.</p>
+ </div>
+</section>
+
+<!-- FICHE ÉLÈVE -->
+<section id="vEleve" hidden>
+ <button class="btn g" data-go="vClasse" style="margin-bottom:12px">← Retour à la classe</button>
+ <div id="eHead" class="card hero"></div>
+ <div class="card"><h2>Progression de l'XP</h2><div id="eChart" class="chart"></div></div>
+ <div class="grid2p">
+  <div class="card"><h2>Défis</h2><div id="eDefis"></div></div>
+  <div class="card"><h2>Observables</h2><div class="tbl" id="eObs"></div><h3>Par activité</h3><div class="tbl" id="eAct"></div></div>
+ </div>
+ <div class="card"><h2>Matchs</h2><div class="tbl"><table class="ptable" id="eMatchs"></table></div></div>
+</section>
+
+<!-- IMPORT -->
+<section id="vImport" hidden>
+ <div class="card"><h2>Importer les fichiers des élèves</h2>
+  <p class="mut" style="margin-top:-4px">Fichiers <b>NOM_Prenom_Classe_BallStar.xlsx</b> exportés depuis Ball Star, ou fichiers complets d'Applis EPS Élèves. Vous pouvez en sélectionner plusieurs à la fois. Les matchs sont rattachés aux élèves de Mes Apps EPS par nom, prénom et classe, sans doublon si un fichier est importé deux fois.</p>
+  <label class="drop" id="drop" for="impFiles"><span style="font-size:2.2rem">📂</span><b>Choisir ou déposer des fichiers .xlsx</b><span class="mut">Plusieurs fichiers acceptés</span></label>
+  <input type="file" id="impFiles" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
+  <label class="chk" style="margin-top:12px"><input type="checkbox" id="impCreer"> Créer les élèves absents de ma liste (sinon leurs matchs sont ignorés)</label>
+  <div id="impLog" class="log"></div>
+ </div>
+ <div class="card"><h2>Liste des élèves</h2>
+  <p class="mut" style="margin-top:-4px">Ball Star utilise la liste d'élèves de Mes Apps EPS sur cet appareil. Si elle est vide, chargez le fichier .xlsx ou .csv de Mes Apps EPS (ou l'export Pronote).</p>
+  <label class="btn g" for="listeFile" style="display:inline-flex">👥 Charger la liste d'élèves</label>
+  <input type="file" id="listeFile" accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+ </div>
+</section>
+
+<!-- RÉGLAGES -->
+<section id="vReglages" hidden>
+ <div class="card"><h2>⚙️ Réglages du jeu</h2>
+  <p class="mut" style="margin-top:-4px">Ces réglages s'appliquent à toute la classe. Les élèves ne peuvent pas les modifier : ils importent seulement le fichier que vous leur donnez, et un fichier modifié à la main est refusé. Ici, l'XP de tous les élèves est toujours recalculée avec ces réglages.</p>
+  <p class="mut" id="gCode"></p>
+  <div class="row"><button class="btn v" id="gExport">⬇️ Fichier de réglages pour les élèves (.xlsx)</button><button class="btn g" id="gImport">📥 Importer des réglages</button><button class="btn g" id="gReset">↺ Réglages par défaut</button></div>
+  <input type="file" id="gFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+ </div>
+ <div class="card"><h2>Gain d'expérience</h2>
+  <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Observable réussi (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
+  <h3>Bonus d'écart au score (seulement en cas de victoire)</h3>
+  <div id="pEcart"></div>
+  <h3>Seuils des niveaux (XP totale)</h3>
+  <div class="grid3"><label class="f">🥈 Argent<input type="number" id="pS1" min="1"></label><label class="f">🥇 Or<input type="number" id="pS2" min="1"></label><label class="f">⭐ Star<input type="number" id="pS3" min="1"></label></div>
+ </div>
+ <div class="card"><h2>Observables</h2>
+  <p class="mut" style="margin-top:-4px">Un observable par ligne. « Libre » : l'élève choisit dans la liste ou écrit le sien. Sinon l'observable choisi est imposé à toute la classe.</p>
+  <div class="acts" id="pActs"></div>
+ </div>
+ <div class="row" style="margin-bottom:24px"><button class="btn big" id="pSave">💾 Enregistrer les réglages</button></div>
+</section>
+</main>
+</div>
+<div id="modal"></div>
+
+<script src="version.js"></script>
+<script src="eps-core.js"></script>
+<script src="bs-xlsx.js"></script>
+<script src="bs-rules.js"></script>
+<script src="bs-art.js"></script>
+<script src="ballstar-prof.js"></script>
+</body></html>
