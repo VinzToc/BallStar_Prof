@@ -180,7 +180,6 @@ $('#gFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
  catch(x){toast('Fichier non reconnu : '+(x.message||x),true)}};
 
 /* ───────── Démarrage ───────── */
-$('#logo').innerHTML=logoSVG(52);
 (async()=>{try{await load()}catch(e){console.error(e)}renderWho();renderClasse();$('#impCreer').checked=!ELEVES.length})();
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.BALLSTAR_NO_SW)navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
