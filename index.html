@@ -83,11 +83,16 @@
   <input type="file" id="gFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
  </div>
  <div class="card"><h2>Gain d'expérience</h2>
-  <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Observable réussi (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
+  <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Par observable validé (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
+  <div class="grid3" style="margin-top:4px"><label class="f">Observables comptés au maximum par match<input type="number" id="pMaxObs" min="1" max="50"></label></div>
   <h3>Bonus d'écart au score (seulement en cas de victoire)</h3>
   <div id="pEcart"></div>
   <h3>Seuils des niveaux (XP totale)</h3>
   <div class="grid3"><label class="f">🥈 Argent<input type="number" id="pS1" min="1"></label><label class="f">🥇 Or<input type="number" id="pS2" min="1"></label><label class="f">⭐ Star<input type="number" id="pS3" min="1"></label></div>
+ </div>
+ <div class="card"><h2>Défis spéciaux : paliers d'étoiles</h2>
+  <p class="mut" style="margin-top:-4px">La 1re étoile débloque l'avatar du défi, la 2e et la 3e ajoutent des étoiles sur l'avatar.</p>
+  <div id="pDefis" class="defgrid"></div>
  </div>
  <div class="card"><h2>Observables</h2>
   <p class="mut" style="margin-top:-4px">Un observable par ligne. « Libre » : l'élève choisit dans la liste ou écrit le sien. Sinon l'observable choisi est imposé à toute la classe.</p>

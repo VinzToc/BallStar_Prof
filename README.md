@@ -4,11 +4,11 @@ Interface professeur de Ball Star, le challenge XP des sports de raquette et de 
 Dépôt conseillé : `BallStar_Prof` → https://vinztoc.github.io/BallStar_Prof/ (même domaine que Mes Apps EPS : base locale « MesAppsEPS » partagée).
 
 ## Fonctions
-1. **Réglages du jeu** (seul endroit où ils se modifient) : XP par match joué, victoire, observable réussi, bonus d'écart (3 paliers), seuils Argent / Or / Star, observables par activité, observable imposé à la classe.
+1. **Réglages du jeu** (seul endroit où ils se modifient) : XP par match joué, victoire, observable validé (et nombre maximum compté par match), bonus d'écart (3 paliers), seuils Argent / Or / Star, paliers 1★ / 2★ / 3★ des 6 défis, observables par activité, observable imposé à la classe.
 2. **Fichier de réglages pour les élèves** : `BallStar_Reglages_<code>.xlsx`. Il porte un code de contrôle : l'appli élève refuse un fichier modifié à la main.
 3. **Import des fichiers élèves** (`NOM_Prenom_Classe_BallStar.xlsx`, plusieurs à la fois) : rattachement par nom, prénom et classe à la liste de Mes Apps EPS, sans doublon. Option « Créer les élèves absents ».
-4. **Suivi de la classe** : classement, niveau, XP, matchs, V–D, réussite de l'observable, défis, matchs confirmés.
-5. **Fiche élève** : courbe d'XP avec les seuils de niveau, défis, observables, détail des matchs, suppression d'un match.
+4. **Suivi de la classe** : classement, niveau, XP, matchs, V–D, observables validés, étoiles de défis (sur 18), matchs confirmés.
+5. **Fiche élève** : courbe d'XP avec les seuils de niveau, défis et leurs étoiles, observables, détail des matchs, suppression d'un match.
 6. **Exports** : bilan de classe (.xlsx, feuilles Bilan et Matchs) et données Ball Star au format Mes Apps EPS.
 
 ## Équité du jeu

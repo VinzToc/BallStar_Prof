@@ -6,7 +6,8 @@
 const APP_ID='ballstar';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const R_=window.BSRULES,{ACTS,NIV,N,norm,isWin,isOk}=R_;
+const R_=window.BSRULES,{ACTS,NIV,N,norm,isWin,isOk,nbObs,DEFIS}=R_;
+const STARS=n=>'<span class="on">'+'★'.repeat(n)+'</span><span class="off">'+'★'.repeat(3-n)+'</span>';
 const {AVATARS,NIVEAUX,avatarSVG,badgeSVG,logoSVG}=window.BSART;
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const fileSafe=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w-]+/g,'_').replace(/^_+|_+$/g,'');
@@ -68,20 +69,20 @@ function renderClasse(){renderFiltres();const L=liste(),act=L.filter(d=>d.p.n),M
  $('#cNiv').innerHTML=NIV.map((n,i)=>`<span>${badgeSVG(i,22)} ${n} : ${act.filter(d=>d.p.lvl===i).length}</span>`).join('');
  if(!L.length){$('#cTable').innerHTML=`<tbody><tr><td><div class="empty">${ELEVES.length?"Aucun match Ball Star pour cette sélection. Importez les fichiers des élèves dans l'onglet « 📥 Import ».":"Aucun élève sur cet appareil : chargez votre liste dans l'onglet « 📥 Import »."}</div></td></tr></tbody>`;return}
  const tri=$('#fTri').value;
- $('#cTable').innerHTML=`<thead><tr>${tri==='xp'?'<th>#</th>':''}<th>Élève</th><th>Niveau</th><th style="text-align:right">XP</th><th style="text-align:right">Matchs</th><th style="text-align:right">V – D</th><th style="text-align:right">Observable</th><th style="text-align:right">Défis</th><th>Confirmés</th><th>Dernier match</th><th>Alerte</th></tr></thead><tbody>${
+ $('#cTable').innerHTML=`<thead><tr>${tri==='xp'?'<th>#</th>':''}<th>Élève</th><th>Niveau</th><th style="text-align:right">XP</th><th style="text-align:right">Matchs</th><th style="text-align:right">V – D</th><th style="text-align:right">Observables</th><th style="text-align:right">Étoiles</th><th>Confirmés</th><th>Dernier match</th><th>Alerte</th></tr></thead><tbody>${
  L.map((d,i)=>{const p=d.p,e=d.e,a=avatarOf(p),diff=p.declare-p.xp;
   return `<tr class="clk" data-id="${esc(e.id)}">${tri==='xp'?`<td class="rk">${p.n?i+1:'–'}</td>`:''}<td><div class="who2"><span class="mini">${avatarSVG(a,{k:'t'+i})}</span><div><b>${esc(full(e))}</b><small>${esc(e.classe||'')}</small></div></div></td>
-  <td><span class="lvl" style="font-size:1rem">${badgeSVG(p.lvl,22)} ${NIV[p.lvl]}</span></td><td class="n">${p.xp}</td><td class="n">${p.n}</td><td class="n">${p.w} – ${p.l}</td><td class="n">${pc(p.ok,p.n)}</td>
-  <td class="n">${p.defis.filter(x=>x.done).length} / ${p.defis.length}</td>
+  <td><span class="lvl" style="font-size:1rem">${badgeSVG(p.lvl,22)} ${NIV[p.lvl]}</span></td><td class="n">${p.xp}</td><td class="n">${p.n}</td><td class="n">${p.w} – ${p.l}</td><td class="n">${p.obs}</td>
+  <td class="n"><span class="stars">★</span> ${p.etoiles} / ${p.defis.length*3}</td>
   <td>${p.n?`<span class="tag ok">✔ ${d.conf.ok}</span>${d.conf.ko?` <span class="tag ko">≠ ${d.conf.ko}</span>`:''}`:''}</td><td>${esc(fmtDate(d.last))}</td>
   <td>${p.n&&diff?`<span class="tag wa" title="XP déclarée par l'appli élève : ${p.declare}">⚠ XP ${diff>0?'+':''}${diff}</span>`:''}</td></tr>`}).join('')}</tbody>`}
 ['#fClasse','#fTri','#fTous'].forEach(s=>$(s).addEventListener('change',()=>{ls.set('BALLSTAR_PROF_CLASSE',$('#fClasse').value);renderClasse()}));
 $('#cTable').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(tr)openEleve(tr.dataset.id)});
 $('#cExport').onclick=()=>{const L=liste().filter(d=>d.p.n);if(!L.length)return toast('Aucun élève avec des matchs dans cette sélection.',true);
- const rows=[['Nom','Prénom','Classe','Niveau','XP (réglages prof)','XP déclarée par l\'élève','Matchs','Victoires','Défaites','Observable réussi (%)','Défis réussis','Matchs confirmés','Matchs contestés','Dernier match']];
- L.forEach(d=>{const p=d.p;rows.push([d.e.nom,d.e.prenom,d.e.classe||'',NIV[p.lvl],p.xp,p.declare,p.n,p.w,p.l,p.n?Math.round(p.ok/p.n*100):'',p.defis.filter(x=>x.done).length,d.conf.ok,d.conf.ko,fmtDate(d.last)])});
- const det=[['Nom','Prénom','Classe','Date','Activité','Adversaire','Mon score','Score adversaire','Résultat','Observable','Observable réussi','Validé par','XP (réglages prof)','XP déclarée','Vérification']];
- L.forEach(d=>d.p.R.forEach(r=>det.push([d.e.nom,d.e.prenom,d.e.classe||'',fmtDate(r.Date),r['Activité']||'',r.Adversaire||'',N(r['Mon score']),N(r['Score adversaire']),r['Résultat'],r.Observable||'',r['Observable réussi']||'',r['Validé par']||'',r['XP gagnée'],r._declare,r._conf==='ok'?'Confirmé':r._conf==='ko'?'Contesté':''])));
+ const rows=[['Nom','Prénom','Classe','Niveau','XP (réglages prof)','XP déclarée par l\'élève','Matchs','Victoires','Défaites','Observables validés','Étoiles de défis (sur 18)','Matchs confirmés','Matchs contestés','Dernier match']];
+ L.forEach(d=>{const p=d.p;rows.push([d.e.nom,d.e.prenom,d.e.classe||'',NIV[p.lvl],p.xp,p.declare,p.n,p.w,p.l,p.obs,p.etoiles,d.conf.ok,d.conf.ko,fmtDate(d.last)])});
+ const det=[['Nom','Prénom','Classe','Date','Activité','Adversaire','Mon score','Score adversaire','Résultat','Observable','Observables validés','Validé par','XP (réglages prof)','XP déclarée','Vérification']];
+ L.forEach(d=>d.p.R.forEach(r=>det.push([d.e.nom,d.e.prenom,d.e.classe||'',fmtDate(r.Date),r['Activité']||'',r.Adversaire||'',N(r['Mon score']),N(r['Score adversaire']),r['Résultat'],r.Observable||'',nbObs(r),r['Validé par']||'',r['XP gagnée'],r._declare,r._conf==='ok'?'Confirmé':r._conf==='ko'?'Contesté':''])));
  const c=$('#fClasse').value;BSX.download(BSX.write([{name:'Bilan',rows},{name:'Matchs',rows:det}]),`BallStar_Bilan_${fileSafe(c||'toutes_classes')}_${today()}.xlsx`);toast('Bilan exporté')};
 $('#cExportData').onclick=async()=>{const L=liste().filter(d=>d.p.n);if(!L.length)return toast('Aucune donnée Ball Star dans cette sélection.',true);
  EPS.downloadXLSX(await EPS.exportXLSX({ids:L.map(d=>d.e.id),apps:[APP_ID]}),`BallStar_${fileSafe($('#fClasse').value||'toutes_classes')}_${today()}.xlsx`);toast('Données exportées')};
@@ -94,17 +95,17 @@ function renderEleve(){const d=DATA.find(x=>x.e.id===CUR);if(!d)return go('vClas
  <div class="lvl">${badgeSVG(p.lvl,34)} ${NIV[p.lvl]}</div><div class="xpbar"><i style="width:${pct}%"></i><b>${nx?`${p.xp} / ${nx} XP`:`${p.xp} XP`}</b></div>
  <div class="xpnext">${nx?`Encore ${nx-p.xp} XP pour passer ${NIV[p.lvl+1]}`:'Niveau maximum atteint'}${p.n&&diff?` · <span class="tag wa">⚠ l'appli de l'élève affichait ${p.declare} XP</span>`:''}</div></div>
  <div class="stats" style="grid-column:1/-1"><div class="stat"><b>${p.n}</b><span>Matchs</span></div><div class="stat"><b>${p.w}</b><span>Victoires</span></div><div class="stat"><b>${p.l}</b><span>Défaites</span></div>
- <div class="stat"><b>${pc(p.ok,p.n)}</b><span>Observable</span></div><div class="stat"><b>${d.conf.ok}</b><span>Confirmés</span></div><div class="stat"><b>${p.defis.filter(x=>x.done).length}/${p.defis.length}</b><span>Défis</span></div></div>`;
+ <div class="stat"><b>${p.obs}</b><span>Observables</span></div><div class="stat"><b>${d.conf.ok}</b><span>Confirmés</span></div><div class="stat"><b>${p.etoiles}/${p.defis.length*3}</b><span>Étoiles</span></div></div>`;
  $('#eChart').innerHTML=chart(p);
- $('#eDefis').innerHTML=p.defis.map(x=>{const av=AVATARS.find(v=>v.defi===x.id);return `<div class="defi ${x.done?'done':''}"><div class="pic">${avatarSVG(av,{locked:!x.done,k:'ed'})}</div><div><b>${x.done?'✅ ':''}${esc(x.nom)}</b><small>${esc(x.desc)}</small><div class="pbar"><i style="width:${Math.round(x.v/x.but*100)}%"></i></div><small>${x.v} / ${x.but}</small></div></div>`}).join('');
- const obs={};p.R.forEach(r=>{const k=r.Observable||'—';(obs[k]=obs[k]||{n:0,ok:0}).n++;if(isOk(r))obs[k].ok++});
- $('#eObs').innerHTML=p.n?`<table><thead><tr><th>Observable</th><th style="text-align:right">Tenté</th><th style="text-align:right">Réussi</th><th style="text-align:right">Taux</th></tr></thead><tbody>${Object.entries(obs).sort((x,y)=>y[1].n-x[1].n).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v.n}</td><td class="n">${v.ok}</td><td class="n"><span class="pct">${pc(v.ok,v.n)}</span></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun match.</div>';
+ $('#eDefis').innerHTML=p.defis.map(x=>{const av=AVATARS.find(v=>v.defi===x.id);return `<div class="defi ${x.done?'done':''}"><div class="pic">${avatarSVG(av,{locked:!x.done,k:'ed',stars:x.etoiles})}</div><div><b>${esc(x.nom)} <span class="stars">${STARS(x.etoiles)}</span></b><small>${x.etoiles>=3?'Défi terminé':esc(x.texte)}</small><div class="pbar"><i style="width:${Math.min(100,Math.round(x.v/x.cible*100))}%"></i></div><small class="pal">${x.paliers.map((n,i)=>`<span class="${x.etoiles>i?'on':''}">${'★'.repeat(i+1)} ${n}</span>`).join('')}<span class="cur">${Math.min(x.v,x.cible)} / ${x.cible}</span></small></div></div>`}).join('');
+ const obs={};p.R.forEach(r=>{const k=r.Observable||'—';(obs[k]=obs[k]||{n:0,ok:0}).n++;obs[k].ok+=nbObs(r)});
+ $('#eObs').innerHTML=p.n?`<table><thead><tr><th>Observable</th><th style="text-align:right">Matchs</th><th style="text-align:right">Validés</th><th style="text-align:right">Moyenne</th></tr></thead><tbody>${Object.entries(obs).sort((x,y)=>y[1].n-x[1].n).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v.n}</td><td class="n">${v.ok}</td><td class="n"><span class="pct">${(v.ok/v.n).toFixed(1).replace('.',',')}</span></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun match.</div>';
  const ba=ACTS.map(x=>{const L=p.R.filter(r=>r['Activité']===x.n);return{x,n:L.length,w:L.filter(isWin).length,xp:L.reduce((s2,r)=>s2+N(r['XP gagnée']),0)}}).filter(y=>y.n);
  $('#eAct').innerHTML=ba.length?`<table><thead><tr><th>Activité</th><th style="text-align:right">Matchs</th><th style="text-align:right">V</th><th style="text-align:right">XP</th></tr></thead><tbody>${ba.map(y=>`<tr><td>${y.x.e} ${esc(y.x.n)}</td><td class="n">${y.n}</td><td class="n">${y.w}</td><td class="n">${y.xp}</td></tr>`).join('')}</tbody></table>`:'';
  $('#eMatchs').innerHTML=p.n?`<thead><tr><th>Date</th><th>Activité</th><th>Adversaire</th><th style="text-align:right">Score</th><th>Résultat</th><th>Observable</th><th>Validé par</th><th style="text-align:right">XP</th><th>Vérif.</th><th></th></tr></thead><tbody>${
   [...p.R].reverse().map((r,i)=>{const act=ACTS.find(x=>x.n===r['Activité'])||{e:'🎮'},dx=r._declare!==N(r['XP gagnée']);
   return `<tr><td>${esc(fmtDate(r.Date))}</td><td>${act.e} ${esc(r['Activité']||'')}</td><td>${esc(r.Adversaire||'')}</td><td class="n">${N(r['Mon score'])} – ${N(r['Score adversaire'])}</td>
-  <td><span class="tag ${isWin(r)?'ok':r['Résultat']==='Défaite'?'ko':'nu'}">${esc(r['Résultat'])}</span></td><td>${isOk(r)?'✅':'❌'} ${esc(r.Observable||'')}</td><td>${esc(r['Validé par']||'')}</td>
+  <td><span class="tag ${isWin(r)?'ok':r['Résultat']==='Défaite'?'ko':'nu'}">${esc(r['Résultat'])}</span></td><td>🎯 ${nbObs(r)} × ${esc(r.Observable||'')}</td><td>${esc(r['Validé par']||'')}</td>
   <td class="n">+${N(r['XP gagnée'])}${dx?` <span class="tag wa" title="XP déclarée par l'élève">${r._declare}</span>`:''}</td>
   <td>${r._conf==='ok'?'<span class="tag ok">✔ confirmé</span>':r._conf==='ko'?'<span class="tag ko">≠ contesté</span>':'<span class="tag nu">non vérifié</span>'}</td>
   <td><button class="del" data-del="${p.R.length-1-i}" title="Supprimer ce match">🗑️</button></td></tr>`}).join('')}</tbody>`:'<tbody><tr><td><div class="empty">Aucun match enregistré.</div></td></tr></tbody>'}
@@ -150,7 +151,8 @@ $('#listeFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';i
 
 /* ───────── Réglages ───────── */
 const lines=t=>[...new Set(String(t||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean))];
-function renderReglages(){const c=CFG;$('#pJoue').value=c.xp.joue;$('#pVict').value=c.xp.victoire;$('#pBonus').value=c.xp.bonus;
+function renderReglages(){const c=CFG;$('#pJoue').value=c.xp.joue;$('#pVict').value=c.xp.victoire;$('#pBonus').value=c.xp.bonus;$('#pMaxObs').value=c.xp.maxObs;
+ $('#pDefis').innerHTML=DEFIS.map(d=>`<div class="defrow"><b>${esc(d.nom)}</b><small>${esc(d.desc('…'))}</small><div class="defin">${[0,1,2].map(i=>`<label>${'★'.repeat(i+1)}<input type="number" min="1" id="pD_${d.id}_${i}" value="${c.defis[d.id][i]}" aria-label="${esc(d.nom)}, ${i+1} étoile(s)"></label>`).join('')}</div></div>`).join('');
  const e=[...c.ecart];while(e.length<3)e.push([0,0]);
  $('#pEcart').innerHTML=e.slice(0,3).map((x,i)=>`<div class="ecart">Écart ≥ <input type="number" min="0" id="pE${i}" value="${x[0]}" aria-label="Écart minimal ${i+1}"> points → + <input type="number" min="0" id="pX${i}" value="${x[1]}" aria-label="XP de l'écart ${i+1}"> XP</div>`).join('')+`<p class="mut" style="margin:6px 0 0">Mettez 0 pour désactiver un palier.</p>`;
  [1,2,3].forEach(i=>$('#pS'+i).value=c.seuils[i]);
@@ -162,7 +164,8 @@ function renderReglages(){const c=CFG;$('#pJoue').value=c.xp.joue;$('#pVict').va
 $('#pSave').onclick=()=>{const s=[0,N($('#pS1').value),N($('#pS2').value),N($('#pS3').value)];
  if(!(s[1]>0&&s[2]>s[1]&&s[3]>s[2]))return toast('Les seuils doivent augmenter : Argent < Or < Star.',true);
  const acts={};for(const [i,a] of ACTS.entries()){const obs=lines($('#pO'+i).value);if(!obs.length)return toast(`Ajoutez au moins un observable en ${a.n}.`,true);acts[a.n]={obs,impose:$('#pI'+i).value}}
- CFG=R_.clean({xp:{joue:N($('#pJoue').value),victoire:N($('#pVict').value),bonus:N($('#pBonus').value)},ecart:[0,1,2].map(i=>[N($('#pE'+i).value),N($('#pX'+i).value)]),seuils:s,acts});
+ const defis={};for(const d of DEFIS){const v=[0,1,2].map(i=>N($(`#pD_${d.id}_${i}`).value));if(!(v[0]>0&&v[1]>v[0]&&v[2]>v[1]))return toast(`${d.nom} : les paliers doivent augmenter (1★ < 2★ < 3★).`,true);defis[d.id]=v}
+ CFG=R_.clean({xp:{joue:N($('#pJoue').value),victoire:N($('#pVict').value),bonus:N($('#pBonus').value),maxObs:Math.max(1,N($('#pMaxObs').value))},defis,ecart:[0,1,2].map(i=>[N($('#pE'+i).value),N($('#pX'+i).value)]),seuils:s,acts});
  saveCfg();compute();renderWho();renderReglages();toast('Réglages enregistrés. Pensez à redonner le fichier de réglages aux élèves.')};
 $('#gReset').onclick=async()=>{const v=await modal('<h2>Réglages par défaut ?</h2><p>Les observables et le barème reviennent aux valeurs de départ. L\'XP de tous les élèves est recalculée.</p>',[{t:'Rétablir',v:1},{t:'Annuler',v:0,cls:'g'}]);
  if(v){CFG=R_.clean(R_.DEF);saveCfg();compute();renderWho();renderReglages();toast('Réglages par défaut rétablis')}};
