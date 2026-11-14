@@ -53,7 +53,7 @@
  <div class="card"><h2>Progression de l'XP</h2><div id="eChart" class="chart"></div></div>
  <div class="grid2p">
   <div class="card"><h2>Défis</h2><div id="eDefis"></div></div>
-  <div class="card"><h2>Observables</h2><div class="tbl" id="eObs"></div><h3>Par activité</h3><div class="tbl" id="eAct"></div></div>
+  <div class="card"><h2>Bonus BallStar</h2><div class="tbl" id="eObs"></div><h3>Par activité</h3><div class="tbl" id="eAct"></div></div>
  </div>
  <div class="card"><h2>Matchs</h2><div class="tbl"><table class="ptable" id="eMatchs"></table></div></div>
 </section>
@@ -83,8 +83,8 @@
   <input type="file" id="gFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
  </div>
  <div class="card"><h2>Gain d'expérience</h2>
-  <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Par observable validé (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
-  <div class="grid3" style="margin-top:4px"><label class="f">Observables comptés au maximum par match<input type="number" id="pMaxObs" min="1" max="50"></label></div>
+  <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Par bonus BallStar validé (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
+  <div class="grid3" style="margin-top:4px"><label class="f">Bonus BallStar comptés au maximum par match<input type="number" id="pMaxObs" min="1" max="50"></label></div>
   <h3>Bonus d'écart au score (seulement en cas de victoire)</h3>
   <div id="pEcart"></div>
   <h3>Seuils des niveaux (XP totale)</h3>
@@ -93,9 +93,11 @@
  <div class="card"><h2>Défis spéciaux : paliers d'étoiles</h2>
   <p class="mut" style="margin-top:-4px">La 1re étoile débloque l'avatar du défi, la 2e et la 3e ajoutent des étoiles sur l'avatar.</p>
   <div id="pDefis" class="defgrid"></div>
+  <h3>Avatars légendaires (total d'étoiles de défis, sur 18)</h3>
+  <div class="grid4" id="pLeg"></div>
  </div>
- <div class="card"><h2>Observables</h2>
-  <p class="mut" style="margin-top:-4px">Un observable par ligne. « Libre » : l'élève choisit dans la liste ou écrit le sien. Sinon l'observable choisi est imposé à toute la classe.</p>
+ <div class="card"><h2>Bonus BallStar par activité</h2>
+  <p class="mut" style="margin-top:-4px">Les bonus BallStar sont les actions motrices valorisées pendant les matchs-défis. Un bonus par ligne (10 par activité par défaut). « Libre » : l'élève choisit dans la liste ou écrit le sien. Sinon le bonus choisi est imposé à toute la classe.</p>
   <div class="acts" id="pActs"></div>
  </div>
  <div class="row" style="margin-bottom:24px"><button class="btn big" id="pSave">💾 Enregistrer les réglages</button></div>
@@ -111,4 +113,5 @@
 <script src="bs-rules.js"></script>
 <script src="bs-art.js"></script>
 <script src="ballstar-prof.js"></script>
+<script src="bs-install.js"></script>
 </body></html>
