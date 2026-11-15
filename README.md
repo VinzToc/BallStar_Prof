@@ -8,7 +8,7 @@ Dépôt conseillé : `BallStar_Prof` → https://vinztoc.github.io/BallStar_Prof
 2. **Fichier de réglages pour les élèves** : `BallStar_Reglages_<code>.xlsx`. Il porte un code de contrôle : l'appli élève refuse un fichier modifié à la main.
 3. **Import des fichiers élèves** (`NOM_Prenom_Classe_BallStar.xlsx`, plusieurs à la fois) : rattachement par nom, prénom et classe à la liste de Mes Apps EPS, sans doublon. Option « Créer les élèves absents ».
 4. **Suivi de la classe** : classement, niveau, XP, matchs, V–D, bonus BallStar validés, étoiles de défis (sur 18), matchs confirmés.
-5. **Fiche élève** : courbe d'XP avec les seuils de niveau, défis et leurs étoiles, observables, détail des matchs, suppression d'un match.
+5. **Fiche élève** (avec la façon dont chaque match a été saisi : direct ou après le match) : courbe d'XP avec les seuils de niveau, défis et leurs étoiles, observables, détail des matchs, suppression d'un match.
 6. **Exports** : bilan de classe (.xlsx, feuilles Bilan et Matchs) et données Ball Star au format Mes Apps EPS.
 
 ## Équité du jeu
