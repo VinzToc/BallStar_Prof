@@ -41,7 +41,7 @@
   <div class="row" style="margin-top:14px"><button class="btn" id="cExport">⬇️ Bilan de la classe (.xlsx)</button><button class="btn g" id="cExportData">⬇️ Données Ball Star (format Mes Apps EPS)</button></div>
  </div>
  <div class="card legend"><h2>Comment lire ce tableau</h2>
-  <p><b>✔ Confirmé</b> : l'adversaire a enregistré le même match (même jour, score inversé). <b>≠ Contesté</b> : l'adversaire a enregistré un score différent. Les autres matchs n'ont pas pu être vérifiés (adversaire sans fichier ou nom différent).</p>
+  <p><b>✔ Confirmé</b> : l'adversaire a enregistré le même match (même jour, score inversé). <b>👀 Observé</b> : match saisi en direct par un observateur (QR code scanné par le joueur, ou ajouté automatiquement depuis le fichier de l'observateur). <b>≠ Contesté</b> : l'adversaire a enregistré un score différent. Les autres matchs n'ont pas pu être vérifiés (adversaire sans fichier ou nom différent).</p>
   <p><b>⚠ XP</b> : l'XP calculée dans l'appli de l'élève ne correspond pas à vos réglages. L'élève n'a pas importé votre fichier de réglages, ou ses données ont été modifiées. Le classement utilise toujours l'XP recalculée.</p>
  </div>
 </section>
@@ -56,6 +56,7 @@
   <div class="card"><h2>Bonus BallStar</h2><div class="tbl" id="eObs"></div><h3>Par activité</h3><div class="tbl" id="eAct"></div></div>
  </div>
  <div class="card"><h2>Matchs</h2><div class="tbl"><table class="ptable" id="eMatchs"></table></div></div>
+ <div class="card"><h2>👀 Matchs observés (comme observateur)</h2><div class="tbl"><table class="ptable" id="eObsv"></table></div></div>
 </section>
 
 <!-- IMPORT -->
@@ -84,7 +85,7 @@
  </div>
  <div class="card"><h2>Gain d'expérience</h2>
   <div class="grid3"><label class="f">Match joué (XP)<input type="number" id="pJoue" min="0" max="500"></label><label class="f">Victoire (XP)<input type="number" id="pVict" min="0" max="500"></label><label class="f">Par bonus BallStar validé (XP)<input type="number" id="pBonus" min="0" max="500"></label></div>
-  <div class="grid3" style="margin-top:4px"><label class="f">Bonus BallStar comptés au maximum par match<input type="number" id="pMaxObs" min="1" max="50"></label></div>
+  <div class="grid3" style="margin-top:4px"><label class="f">Bonus BallStar comptés au maximum par match<input type="number" id="pMaxObs" min="1" max="50"></label><label class="f">👀 Observateur : par match observé (XP)<input type="number" id="pObsM" min="0" max="500"></label><label class="f">👀 Observateur : par bonus noté (XP)<input type="number" id="pObsB" min="0" max="100"></label></div>
   <h3>Bonus d'écart au score (seulement en cas de victoire)</h3>
   <div id="pEcart"></div>
   <h3>Seuils des niveaux (XP totale)</h3>

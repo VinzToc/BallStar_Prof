@@ -30,3 +30,8 @@ Dans `apps.json` de `Mes_Apps_EPS` (et copier `icons/icon-192-BallStar-Prof.png`
 
 ## Installation
 À l'ouverture, l'appli propose de s'installer sur l'ordinateur ou la tablette si ce n'est pas déjà fait (`bs-install.js`, commun aux deux applis).
+
+## Matchs observés (v1.5)
+- Les lignes « Observation » (élève observateur) rapportent l'XP d'observateur (réglable : par match observé, par bonus noté) et ne comptent pas comme des matchs joués.
+- Le match observé est attribué aux deux joueurs : par le QR code qu'ils ont scanné, ou automatiquement depuis le fichier de l'observateur s'ils ne l'ont pas fait (sans doublon grâce à l'identifiant du match).
+- Tableau de classe : colonne « 👀 Observés » ; fiche élève : tableau des matchs observés ; bilan exporté : feuille « Observations ».
