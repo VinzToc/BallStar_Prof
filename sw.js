@@ -1,16 +1,18 @@
-/* Service worker Ball Star Prof – tout est mis en cache : l'app fonctionne sans réseau.
+/* Service worker Ball Star Prof – tout est mis en cache : l'app fonctionne sans réseau, et prend la dernière version dès qu'il y a du réseau.
    Pour publier une mise à jour : changer VERSION ci-dessous (et APP_VERSION dans version.js). */
-const VERSION='1.6.1';
+const VERSION='1.7.0';
 const CACHE='ballstar-prof-'+VERSION;
 const CORE=["./","index.html","ballstar-prof.js","ballstar.css","prof.css","bs-art.js","bs-rules.js","bs-install.js","bs-xlsx.js","eps-core.js","version.js","manifest.webmanifest","icons/icon-192.png","icons/logo-BallStar-Prof.png","icons/icon-512.png","icons/icon-maskable-512.png","icons/apple-touch-icon.png"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith('ballstar-prof-')&&k!==CACHE)await caches.delete(k);await self.clients.claim()})())});
-// Cache d'abord, mise à jour en arrière-plan
+// Réseau d'abord (la dernière version est utilisée dès qu'il y a du réseau), cache si hors ligne ou réseau trop lent.
 self.addEventListener('fetch',e=>{const req=e.request;
  if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
- e.respondWith((async()=>{const cache=await caches.open(CACHE);const cached=await cache.match(req,{ignoreSearch:true});
-  const net=fetch(req).then(r=>{if(r&&r.ok)cache.put(req,r.clone());return r}).catch(()=>null);
-  if(cached){e.waitUntil(net);return cached}
-  const r=await net;if(r)return r;
+ e.respondWith((async()=>{const cache=await caches.open(CACHE);
+  const net=fetch(req,{cache:'no-cache'}).then(r=>{if(r&&r.ok)cache.put(req,r.clone());return r}).catch(()=>null);
+  const lent=new Promise(res=>setTimeout(()=>res(null),3500));
+  const r=await Promise.race([net,lent]);if(r)return r;
+  const cached=await cache.match(req,{ignoreSearch:true});if(cached){e.waitUntil(net);return cached}
+  const r2=await net;if(r2)return r2;
   if(req.mode==='navigate'){const fb=await cache.match('index.html');if(fb)return fb}
   return new Response('Hors ligne',{status:503})})())});
