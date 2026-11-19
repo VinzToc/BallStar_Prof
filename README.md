@@ -37,4 +37,4 @@ Dans `apps.json` de `Mes_Apps_EPS` (et copier `icons/icon-192-BallStar-Prof.png`
 - Tableau de classe : colonne « 👀 Observés » ; fiche élève : tableau des matchs observés ; bilan exporté : feuille « Observations ».
 
 ## Envoi vers Nuage (v1.6)
-Réglages → « ☁️ Envoi vers Nuage » : lien de partage d'un dossier Nuage (de préférence en « Dépôt de fichier (envoi uniquement) ») et mot de passe éventuel. Aucun lien par défaut. Le lien est transmis aux élèves dans le fichier de réglages ; s'il est vide, le bouton n'apparaît pas chez eux. Les fichiers déposés s'importent ensuite dans l'onglet « 📥 Import ».
+Réglages → « ☁️ Envoi vers Nuage » : lien de partage d'un dossier Nuage (de préférence en « Dépôt de fichier (envoi uniquement) ») et case « protégé par un mot de passe » (les élèves tapent le mot de passe à l'envoi ; il n'est jamais transmis dans les réglages). Aucun lien par défaut. Le lien est transmis aux élèves dans le fichier de réglages ; s'il est vide, le bouton n'apparaît pas chez eux. Les fichiers déposés s'importent ensuite dans l'onglet « 📥 Import ».
