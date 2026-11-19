@@ -35,3 +35,6 @@ Dans `apps.json` de `Mes_Apps_EPS` (et copier `icons/icon-192-BallStar-Prof.png`
 - Les lignes « Observation » (élève observateur) rapportent l'XP d'observateur (réglable : par match observé, par bonus noté) et ne comptent pas comme des matchs joués.
 - Le match observé est attribué aux deux joueurs : par le QR code qu'ils ont scanné, ou automatiquement depuis le fichier de l'observateur s'ils ne l'ont pas fait (sans doublon grâce à l'identifiant du match).
 - Tableau de classe : colonne « 👀 Observés » ; fiche élève : tableau des matchs observés ; bilan exporté : feuille « Observations ».
+
+## Envoi vers Nuage (v1.6)
+Réglages → « ☁️ Envoi vers Nuage » : lien de partage d'un dossier Nuage (de préférence en « Dépôt de fichier (envoi uniquement) ») et mot de passe éventuel. Aucun lien par défaut. Le lien est transmis aux élèves dans le fichier de réglages ; s'il est vide, le bouton n'apparaît pas chez eux. Les fichiers déposés s'importent ensuite dans l'onglet « 📥 Import ».

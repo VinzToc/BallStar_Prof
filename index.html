@@ -101,6 +101,13 @@
   <p class="mut" style="margin-top:-4px">Les bonus BallStar sont les actions motrices valorisées pendant les matchs-défis. Un bonus par ligne (10 par activité par défaut). « Libre » : l'élève choisit dans la liste ou écrit le sien. Sinon le bonus choisi est imposé à toute la classe.</p>
   <div class="acts" id="pActs"></div>
  </div>
+ <div class="card"><h2>☁️ Envoi vers Nuage (facultatif)</h2>
+  <p class="mut" style="margin-top:-4px">Si vous collez ici le lien de partage d'un dossier Nuage (cloud de l'Éducation nationale), les élèves verront un bouton « ☁️ Envoyer vers Nuage » dans leur Bilan pour y déposer leur sauvegarde. Laissé vide : pas de bouton chez les élèves.</p>
+  <p class="mut">Dans Nuage : créez un dossier, puis <b>Partager → Lien public</b> et choisissez <b>« Dépôt de fichier (envoi uniquement) »</b> : les élèves pourront déposer, sans voir les fichiers des autres.</p>
+  <label class="f" for="pNuage">Lien de partage du dossier</label><input type="text" id="pNuage" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://nuage…apps.education.fr/index.php/s/…">
+  <label class="f" for="pNuagePw">Mot de passe du partage (seulement si le lien en a un)</label><input type="text" id="pNuagePw" autocomplete="off" spellcheck="false">
+  <p class="mut" style="margin:8px 0 0">Le lien est transmis aux élèves dans le fichier de réglages : exportez un nouveau fichier après l'avoir modifié.</p>
+ </div>
  <div class="row" style="margin-bottom:24px"><button class="btn big" id="pSave">💾 Enregistrer les réglages</button></div>
 </section>
 </main>
