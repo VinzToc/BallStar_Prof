@@ -18,6 +18,7 @@ const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.ge
 const CFG_KEY='BALLSTAR_PROF_CONFIG';
 let CFG=(()=>{try{const o=JSON.parse(ls.get(CFG_KEY)||'null');if(o)return R_.clean(o)}catch(e){}return R_.clean(R_.DEF)})();
 const saveCfg=()=>ls.set(CFG_KEY,JSON.stringify(CFG));
+if(CFG.nuage){CFG=R_.clean({...CFG,nuage:'',nuageMdp:false});saveCfg()} // l'envoi vers Nuage a été retiré (v1.8)
 
 /* ───────── Données ───────── */
 let ELEVES=[],DATA=[],CUR=null;   // DATA : [{e, p (progression recalculée), conf:{ok,ko}}]
@@ -164,7 +165,7 @@ $('#listeFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';i
 
 /* ───────── Réglages ───────── */
 const lines=t=>[...new Set(String(t||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean))];
-function renderReglages(){const c=CFG;$('#pJoue').value=c.xp.joue;$('#pVict').value=c.xp.victoire;$('#pBonus').value=c.xp.bonus;$('#pMaxObs').value=c.xp.maxObs;$('#pObsM').value=c.xp.obsMatch;$('#pObsB').value=c.xp.obsBonus;$('#pNuage').value=c.nuage||'';$('#pNuageMdp').checked=!!c.nuageMdp;
+function renderReglages(){const c=CFG;$('#pJoue').value=c.xp.joue;$('#pVict').value=c.xp.victoire;$('#pBonus').value=c.xp.bonus;$('#pMaxObs').value=c.xp.maxObs;$('#pObsM').value=c.xp.obsMatch;$('#pObsB').value=c.xp.obsBonus;
  $('#pLeg').innerHTML=c.legendes.map((v,i)=>{const a=AVATARS.find(x=>x.legende===i);return `<label class="f">✨ ${esc(a.nom)}<input type="number" min="1" max="18" id="pL${i}" value="${v}"></label>`}).join('');
  $('#pDefis').innerHTML=DEFIS.map(d=>`<div class="defrow"><b>${esc(d.nom)}</b><small>${esc(d.desc('…'))}</small><div class="defin">${[0,1,2].map(i=>`<label>${'★'.repeat(i+1)}<input type="number" min="1" id="pD_${d.id}_${i}" value="${c.defis[d.id][i]}" aria-label="${esc(d.nom)}, ${i+1} étoile(s)"></label>`).join('')}</div></div>`).join('');
  const e=[...c.ecart];while(e.length<3)e.push([0,0]);
@@ -180,8 +181,7 @@ $('#pSave').onclick=()=>{const s=[0,N($('#pS1').value),N($('#pS2').value),N($('#
  const acts={};for(const [i,a] of ACTS.entries()){const obs=lines($('#pO'+i).value);if(!obs.length)return toast(`Ajoutez au moins un bonus BallStar en ${a.n}.`,true);acts[a.n]={obs,impose:$('#pI'+i).value}}
  const legendes=[0,1,2,3].map(i=>N($('#pL'+i).value));if(!legendes.every((v,i)=>v>0&&v<=18&&(!i||v>legendes[i-1])))return toast('Avatars légendaires : nombres d\'étoiles croissants, entre 1 et 18.',true);
  const defis={};for(const d of DEFIS){const v=[0,1,2].map(i=>N($(`#pD_${d.id}_${i}`).value));if(!(v[0]>0&&v[1]>v[0]&&v[2]>v[1]))return toast(`${d.nom} : les paliers doivent augmenter (1★ < 2★ < 3★).`,true);defis[d.id]=v}
- const nuage=$('#pNuage').value.trim();if(nuage&&!R_.lienNuage(nuage))return toast('Lien Nuage non reconnu : collez le lien de partage complet, de la forme https://…/index.php/s/…',true);
- CFG=R_.clean({nuage,nuageMdp:$('#pNuageMdp').checked,xp:{joue:N($('#pJoue').value),victoire:N($('#pVict').value),bonus:N($('#pBonus').value),maxObs:Math.max(1,N($('#pMaxObs').value)),obsMatch:N($('#pObsM').value),obsBonus:N($('#pObsB').value)},defis,legendes,ecart:[0,1,2].map(i=>[N($('#pE'+i).value),N($('#pX'+i).value)]),seuils:s,acts});
+ CFG=R_.clean({xp:{joue:N($('#pJoue').value),victoire:N($('#pVict').value),bonus:N($('#pBonus').value),maxObs:Math.max(1,N($('#pMaxObs').value)),obsMatch:N($('#pObsM').value),obsBonus:N($('#pObsB').value)},defis,legendes,ecart:[0,1,2].map(i=>[N($('#pE'+i).value),N($('#pX'+i).value)]),seuils:s,acts});
  saveCfg();compute();renderWho();renderReglages();toast('Réglages enregistrés. Pensez à redonner le fichier de réglages aux élèves.')};
 $('#gReset').onclick=async()=>{const v=await modal('<h2>Réglages par défaut ?</h2><p>Les bonus BallStar et le barème reviennent aux valeurs de départ. L\'XP de tous les élèves est recalculée.</p>',[{t:'Rétablir',v:1},{t:'Annuler',v:0,cls:'g'}]);
  if(v){CFG=R_.clean(R_.DEF);saveCfg();compute();renderWho();renderReglages();toast('Réglages par défaut rétablis')}};
