@@ -1,6 +1,6 @@
 /* Service worker Ball Star Prof – tout est mis en cache : l'app fonctionne sans réseau, et prend la dernière version dès qu'il y a du réseau.
    Pour publier une mise à jour : changer VERSION ci-dessous (et APP_VERSION dans version.js). */
-const VERSION='1.8.5';
+const VERSION='1.8.6';
 const CACHE='ballstar-prof-'+VERSION;
 const CORE=['fonts/fonts.css','fonts/lilita-one-latin-400-normal.woff2','fonts/nunito-latin-600-normal.woff2','fonts/nunito-latin-800-normal.woff2','fonts/nunito-latin-900-normal.woff2','footer.js','nouveautes.js','nouveautes.json',"./","index.html","ballstar-prof.js","ballstar.css","prof.css","bs-art.js","bs-rules.js","bs-install.js","bs-xlsx.js","eps-core.js","version.js","manifest.webmanifest","icons/icon-192.png","icons/logo-BallStar-Prof.png","icons/icon-512.png","icons/icon-maskable-512.png","icons/apple-touch-icon.png"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
